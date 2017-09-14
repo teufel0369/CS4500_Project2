@@ -19,6 +19,18 @@ function drawGrid() {
     $(".grid").height(520 / 10);
 }
 
+function outputStats(array) {
+    "use strict";
+
+    var row, col, k = 0;
+
+    for (row = 0; row < 10; row += 1) {
+        for (col = 0; col < 10; col += 1) {
+            console.log("Cell[" + row + "][" + col + "] was touched " + array[row][col] + " times.");
+        }
+    }
+}
+
 //random number of steps
 function randomNumSteps() {
     "use strict";
@@ -93,14 +105,21 @@ function isCellOccupied(redRow, redCol, blueRow, blueCol) {
     }
 }
 
+function addCellTouch(row, col, array) {
+    "use strict";
+    var x = array[row][col];
+    x += 1;
+    array[row][col] = x;
+    return array;
+}
 
 //will control the overall function of the game
-function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1) {
+function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1, array) {
     "use strict";
 
     var redRandomDirection, blueRandomDirection, redNumSteps, blueNumSteps, fitty1, fitty2 = 0,
         redRow = row1, redCol = col1, flag, countdown = countdown1, redCounter = counter1,
-        blueCounter = counter2, prevCol, prevRow, blueRow = row2, blueCol = col2, cellArray;
+        blueCounter = counter2, prevCol, prevRow, blueRow = row2, blueCol = col2, array1 = array;
 
     redRandomDirection = randomDirection(); //pick the direction
     blueRandomDirection = randomDirection(); //pick the direction
@@ -128,12 +147,14 @@ function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1) {
                 colorRedPoint(redRow, redCol);
                 countdown -= 1;
                 redCounter = redCounter + 1;
+                addCellTouch(redRow, redCol, array1);
 
             } else {
                 redCol = prevCol;
                 colorRedPoint(redRow, redCol);
                 countdown -= 1;
                 redCounter = redCounter + 1;
+                addCellTouch(redRow, redCol, array1);
             }
 
         } else if (redRandomDirection === 1) {
@@ -145,12 +166,14 @@ function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1) {
                 colorRedPoint(redRow, redCol);
                 countdown -= 1;
                 redCounter = redCounter + 1;
+                addCellTouch(redRow, redCol, array1);
 
             } else {
                 redRow = prevRow;
                 colorRedPoint(redRow, redCol);
                 countdown -= 1;
                 redCounter = redCounter + 1;
+                addCellTouch(redRow, redCol, array1);
             }
 
         } else if (redRandomDirection === 2) {
@@ -162,12 +185,14 @@ function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1) {
                 colorRedPoint(redRow, redCol);
                 countdown -= 1;
                 redCounter = redCounter + 1;
+                addCellTouch(redRow, redCol, array1);
 
             } else {
                 redCol = prevCol;
                 colorRedPoint(redRow, redCol);
                 countdown -= 1;
                 redCounter = redCounter + 1;
+                addCellTouch(redRow, redCol, array1);
             }
 
         } else {
@@ -179,12 +204,14 @@ function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1) {
                 colorRedPoint(redRow, redCol);
                 countdown -= 1;
                 redCounter = redCounter + 1;
+                addCellTouch(redRow, redCol, array1);
 
             } else {
                 redRow = prevRow;
                 colorRedPoint(redRow, redCol);
                 countdown -= 1;
                 redCounter = redCounter + 1;
+                addCellTouch(redRow, redCol, array1);
             }
         }
 
@@ -197,12 +224,14 @@ function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1) {
                 colorBluePoint(blueRow, blueCol);
                 countdown -= 1;
                 blueCounter = blueCounter + 1;
+                addCellTouch(blueRow, blueCol, array1);
 
             } else {
                 blueCol = prevCol;
                 colorBluePoint(blueRow, blueCol);
                 countdown -= 1;
                 blueCounter = blueCounter + 1;
+                addCellTouch(blueRow, blueCol, array1);
             }
 
         } else if (blueRandomDirection === 1) {
@@ -214,12 +243,14 @@ function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1) {
                 colorBluePoint(blueRow, blueCol);
                 countdown -= 1;
                 blueCounter = blueCounter + 1;
+                addCellTouch(blueRow, blueCol, array1);
 
             } else {
                 blueRow = prevRow;
                 colorBluePoint(blueRow, blueCol);
                 countdown -= 1;
                 blueCounter = blueCounter + 1;
+                addCellTouch(blueRow, blueCol, array1);
             }
 
         } else if (blueRandomDirection === 2) {
@@ -231,12 +262,14 @@ function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1) {
                 colorBluePoint(blueRow, blueCol);
                 countdown -= 1;
                 blueCounter = blueCounter + 1;
+                addCellTouch(blueRow, blueCol, array1);
 
             } else {
                 blueCol = prevCol;
                 colorBluePoint(blueRow, blueCol);
                 countdown -= 1;
                 blueCounter = blueCounter + 1;
+                addCellTouch(blueRow, blueCol, array1);
             }
 
         } else {
@@ -248,12 +281,14 @@ function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1) {
                 colorBluePoint(blueRow, blueCol);
                 countdown -= 1;
                 blueCounter = blueCounter + 1;
+                addCellTouch(blueRow, blueCol, array1);
 
             } else {
                 blueRow = prevRow;
                 colorBluePoint(blueRow, blueCol);
                 countdown -= 1;
                 blueCounter = blueCounter + 1;
+                addCellTouch(blueRow, blueCol, array1);
             }
         }
 
@@ -265,16 +300,18 @@ function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1) {
             alert('You have exhausted all turns! Thanks for playing Strange Game!');
             document.getElementById('redBoldStuff').innerHTML = redCounter;
             document.getElementById('blueBoldStuff').innerHTML = blueCounter;
+            outputStats(array1);
 
         } else if (isRedWinningCell(redRow, redCol) === true || isBlueWinningCell(blueRow, blueCol) === true) {
             document.getElementById('redBoldStuff').innerHTML = redCounter;
             document.getElementById('blueBoldStuff').innerHTML = blueCounter;
             alert('You Win!!!! Thanks for playing Strange Game!');
+            outputStats(array1);
 
         } else {
             document.getElementById('redBoldStuff').innerHTML = redCounter
-            document.getElementById('blueBoldStuff').innerHTML = blueCounter;;
-            gamePlay(redRow, redCol, blueRow, blueCol, redCounter, blueCounter, countdown); //update the game data and make recursive call
+            document.getElementById('blueBoldStuff').innerHTML = blueCounter;
+            gamePlay(redRow, redCol, blueRow, blueCol, redCounter, blueCounter, countdown, array1); //update the game data and make recursive call
 
             /* Note: I typically don't use recursion, as it's bad for performance. However, this was really the only
             way to really get the setTimeout function to operate as intended. */
@@ -286,7 +323,6 @@ function gamePlay(row1, col1, row2, col2, counter1, counter2, countdown1) {
 //when the page loads do this
 $(document).ready(function () {
     "use strict";
-
     drawGrid(); //draw the grid
     colorRedPoint(9, 0); //starting point for the game
     colorBluePoint(9, 9);
@@ -296,7 +332,18 @@ $(document).ready(function () {
 $('#largeButton').click(function () {
     "use strict";
 
+    var x = new Array(10);
+    for (var i = 0; i < 10; i += 1) {
+        x[i] = new Array(10);
+    }
+
+    for (var row = 0; row < 10; row += 1) {
+        for (var col = 0; col < 10; col += 1) {
+            x[row][col] = 0
+        }
+    }
+
     //starting the game;
     //row 9, column 0, initialize the counter to zero, and set the countdown to 1,000,000 possible turns
-    gamePlay(9, 0, 9, 9, 0, 0, 1000000);
+    gamePlay(9, 0, 9, 9, 0, 0, 2000000, x);
 });
