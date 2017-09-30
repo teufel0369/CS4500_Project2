@@ -1,0 +1,627 @@
+<!doctype html>
+
+<!-- Christopher Thompson 25 August 2017-->
+<!-- Jake Li, Omar Ismail -->
+<!-- CS 4500  -->
+<!-- HOMEWORK 4 -->
+
+<html>
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!---<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.js"></script>--->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <title>HW1 cjt7g6</title>
+    <style>
+        #container{
+            position: relative;
+            top: 20px;
+            bottom: 30px;
+            outline: 2px solid #000;
+            font-size: 0;
+            margin: auto;
+            height: 520px;
+            width: 520px;
+            padding: 0;
+            border: none;
+            margin-top: 20px;
+        }
+
+        #container2{
+            position: relative;
+            outline: 2px solid #000;
+            font-size: 0;
+            margin-top: 50px;
+            margin-left: 40px;
+            height: 520px;
+            width: 520px;
+            padding: 0;
+            border: none;
+        }
+
+        #container3{
+            position: relative;
+            outline: 2px solid #000;
+            font-size: 0;
+            margin-top: 50px;
+            margin-left: 40px;
+            height: 510px;
+            width: 520px;
+            padding: 0;
+            border: none;
+        }
+
+
+        .gridThree{
+            margin: 0;
+            padding: 0;
+            border: none;
+            outline: 1px solid #000;
+            display: inline-block;
+        }
+
+        .gridTwo{
+            margin: 0;
+            padding: 0;
+            border: none;
+            outline: 1px solid #000;
+            display: inline-block;
+        }
+
+        .grid{
+            margin: 0;
+            padding: 0;
+            border: none;
+            outline: 1px solid #000;
+            display: inline-block;
+        }
+
+        #largeButton{
+            margin-left: 20px;
+            margin-top: 20px;
+            padding-right: 10px;
+        }
+
+        #counter{
+            font-size: 200%;
+            font-weight: bold;
+            padding-left: 20px;
+        }
+
+        #boldStuff{
+            font-size: 100%;
+        }
+
+        #wrapper{
+            display: inline-flex;
+            margin-left: 40px;
+        }
+
+        #statsButton, #drawChart{
+            margin-left: 35px;
+        }
+
+        #title{
+            margin-left: 30%;
+        }
+
+        #documentation1{
+            margin-left: 1%;
+            margin-right: 1%;
+            margin-bottom: 1%;
+        }
+
+        #documentation2{
+            margin-left: 1%;
+            margin-right: 1%;
+            margin-bottom: 1%;
+        }
+
+        #documentation2 h4{
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+<div id="title"><h2>Welcome to Strange Experiment!</h2></div>
+<br>
+<div id="documentation1"><h4>
+    Below there are 3 boards each with 100, 400, and 900 cells respectively. On each board, 5 red tiles will be used to simulate 5 random trials. Each tile
+    will start in the lower left corner and then move independently and unaware of each other until each one reaches the upper right hand corner.
+    The strange experiment will prove that as the independent variable (the number of cells) increases, the average number of iterations for each run also increases
+    in a linear fashion.
+</h4></div>
+
+<div id="documentation2"><h4>
+    Instructions: <br>
+         1) Press start to start the 15 randomized trials.<br>
+         2) When the trials finish you can view the statistics in the console by pressing "Get Stat" OR<br>
+         3) You can view the the graph by pressing "Draw Charts"
+</h4></div>
+
+<div id="wrapper">
+    <div id="container"></div>
+    <div id="wrapper2" style="display: inline-block">
+        <button id="largeButton" type="button" class="btn btn-primary btn-lg">Start</button>
+        <div id="counter">Touches: <b id="boldStuff"></b></div>
+    </div>
+</div>
+<div id="container2"></div>
+<div id="container3"></div>
+<br><br>
+<div id="wrapper3">
+    <button id="statsButton" type="button" class="btn btn-primary btn-lg">Get Stats</button>
+    <button id="drawChart" type="button" class="btn btn-primary btn-lg">Draw Charts</button>
+</div>
+<div id="chart_div" style="width: 720px; height: 720px; margin-top: 35px;"></div>
+
+<script type="text/javascript">
+    google.charts.load('current', {'packages': ['corechart', 'bar']}); //Load in the charts API
+
+    /*global $, jQuery*/
+    /*global alert, jQuery*/
+    /*global console, jQuery*/
+
+
+    var grid1Nums = [], grid2Nums = [], grid3Nums = [], counter1, counter2, counter3;
+
+    /* Name: draw10x10Grid
+       Purpose: The function will use jQuery to grab the container element and build a 10x10 grid
+       Inputs: None
+       Returns: None
+     *  */
+    function draw10x10Grid() {
+        "use strict";
+        var row, col, k = 0;
+
+        //grab the div container by ID and append a 10X10 grid to it with corresponding point elements
+        for (row = 0; row < 10; row += 1) {
+            for (col = 0; col < 10; col += 1) {
+                $("#container").append('<div class="grid grid' + row + col + '"></div>');
+            }
+        }
+
+        //size of the "grid" elements 520 / 10 because there is a 10x10 grid and this makes it proportionate
+        $(".grid").width(520 / 10);
+        $(".grid").height(520 / 10);
+    }
+
+    /* Name: draw20x20Grid
+       Purpose: The function will use jQuery to grab the container2 element and build a 20x20 grid
+       Inputs: None
+       Returns: None
+     *  */
+    function draw20x20Grid() {
+        "use strict";
+        var row, col, k = 0;
+
+        //grab the div container by ID and append a 10X10 grid to it with corresponding point elements
+        for (row = 0; row < 20; row += 1) {
+            for (col = 0; col < 20; col += 1) {
+                $("#container2").append('<div class="gridTwo gridTwo' + row + col + '"></div>');
+            }
+        }
+
+        //size of the "grid" elements 520 / 20 because there is a 10x10 grid and this makes it proportionate
+        $(".gridTwo").width(520 / 20);
+        $(".gridTwo").height(520 / 20);
+    }
+
+    /* Name: draw30x30Grid
+       Purpose: The function will use jQuery to grab the container element and build a 30x30 grid
+       Inputs: None
+       Returns: None
+     *  */
+    function draw30x30Grid() {
+        "use strict";
+        var row, col, k = 0;
+
+        //grab the div container by ID and append a 10X10 grid to it with corresponding point elements
+        for (row = 0; row < 30; row += 1) {
+            for (col = 0; col < 30; col += 1) {
+                $("#container3").append('<div class="gridThree gridThree' + row + col + '"></div>');
+            }
+        }
+
+        //size of the "grid" elements 520 / 30 because there is a 10x10 grid and this makes it proportionate
+        $(".gridThree").width(520 / 30);
+        $(".gridThree").height(520 / 30);
+    }
+
+    /* Name: randomNumSteps
+       Purpose: The function will randomly compute a number of steps from 0 to 2
+       Inputs: None
+       Returns: None
+     *  */
+    function randomNumSteps() {
+        "use strict";
+        return Math.floor(Math.random() * 3);
+    }
+
+    /* Name: randomDirection
+       Purpose: The function will randomly compute a number from 0 to 3 to choose a cardinal direction
+       Inputs: None
+       Returns: None
+     *  */
+    function randomDirection() {
+        "use strict";
+        return Math.floor(Math.random() * 4);
+    }
+
+    /* Name: colorPoint
+       Purpose: The function will color the specified point red
+       Inputs: the grid identifier (.grid, .gridTwo, or .gridThree), the row, and column
+       Returns: the specified element colored red
+     *  */
+    function colorPoint(grid_ident, row, col) {
+        "use strict";
+        return $(grid_ident + row + col).css('background-color', 'red');
+    }
+
+    /* Name: clearPoint
+       Purpose: The function will color the specified point back to white
+       Inputs: the grid identifier (.grid, .gridTwo, or .gridThree), the row, and column
+       Returns: the specified element colored white
+     *  */
+    function clearPoint(grid_ident, row, col) {
+        "use strict";
+        return $(grid_ident + row + col).css('background-color', 'white');
+    }
+
+    /* Name: clearPoint
+       Purpose: The function will check to see if the randomly generated cell exists
+       Inputs: the grid identifier (.grid, .gridTwo, or .gridThree), the row, and column.
+       In this case the grid identifier corresponds to which board to use.
+       Returns: true if the cell exists, false otherwise
+     *  */
+    function doesCellExist(grid_ident, row, col) {
+        "use strict";
+
+        if (grid_ident === ".grid") {
+            if (row > 9 || col > 9 || row < 0 || col < 0) {
+                return false;
+            } else {
+                return true;
+            }
+        } else if (grid_ident === ".gridTwo") {
+            if (row > 19 || col > 19 || row < 0 || col < 0) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            if (row > 29 || col > 29 || row < 0 || col < 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    /* Name: isWinningCell
+       Purpose: The function will check to see if the current occupied cell is the winning cell
+       Inputs: the grid identifier (.grid, .gridTwo, or .gridThree), the row, and column.
+       In this case the grid identifier corresponds to which board to use.
+       Returns: true if the cell is the winning cell, false otherwise
+     *  */
+    function isWinningCell(grid_ident, row, col) {
+        "use strict";
+
+        if (grid_ident === ".grid") {
+            if (row === 0 && col === 9) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (grid_ident === ".gridTwo") {
+            if (row === 0 && col === 19) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (row === 0 && col === 29) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    /* Name: addToCountArray
+       Purpose: The function will add the counter values to the array
+       Inputs: the grid identifier (.grid, .gridTwo, or .gridThree) and the counter.
+       In this case the grid identifier corresponds to which array and which counter to use.
+       Returns: None
+     *  */
+    function addToCountArray(grid_ident, counter) {
+        "use strict";
+        if (grid_ident === ".grid") {
+            grid1Nums.push(counter);
+
+        } else if (grid_ident === ".gridTwo") {
+            grid2Nums.push(counter);
+
+        } else {
+            grid3Nums.push(counter);
+        }
+    }
+
+    /* Name: addToCounter
+       Purpose: The function will add to the counter
+       Inputs: the grid identifier (.grid, .gridTwo, or .gridThree)
+       In this case the grid identifier corresponds to which counter to use.
+       Returns: None
+     *  */
+    function addToCounter(grid_ident) {
+        "use strict";
+        if (grid_ident === ".grid") {
+            counter1 += 1;
+
+        } else if (grid_ident === ".gridTwo") {
+            counter2 += 1;
+
+        } else {
+            counter3 += 1;
+        }
+    }
+
+    /* Name: returnCounter
+       Purpose: The function will return the appropriate counter
+       Inputs: the grid identifier (.grid, .gridTwo, or .gridThree)
+       In this case the grid identifier corresponds to which counter to return
+       Returns: the specified counter
+     *  */
+    function returnCounter(grid_ident) {
+        "use strict";
+        if (grid_ident === ".grid") {
+            return counter1;
+
+        } else if (grid_ident === ".gridTwo") {
+            return counter2;
+
+        } else {
+            return counter3;
+        }
+    }
+
+    /* Name: initializeCounter
+       Purpose: The function will initialize the appropriate counter
+       Inputs: the grid identifier (.grid, .gridTwo, or .gridThree).
+       In this case the grid identifier corresponds to which counter to initialize.
+       Returns: None
+     *  */
+    function initializeCounter(grid_ident) {
+        "use strict";
+        if (grid_ident === ".grid") {
+            counter1 = 0;
+
+        } else if (grid_ident === ".gridTwo") {
+            counter2 = 0;
+
+        } else {
+            counter3 = 0;
+        }
+    }
+
+    /* Name: averageNumTouches
+       Purpose: The function will check to see if the randomly generated cell exists
+       Inputs: the grid identifier (.grid, .gridTwo, or .gridThree), the row, and column.
+       In this case the grid identifier corresponds to which array to use.
+       Returns: the ceiling of the average number of iterations per tile
+     *  */
+    function averageNumTouches(grid_ident) {
+        "use strict";
+        var placeHolder = 0, avgNumTouches = 0;
+
+        for(var i = 0; i < 5; i += 1) {
+            if (grid_ident === ".grid") {
+               avgNumTouches = (placeHolder += grid1Nums[i]) / 5;
+
+            } else if (grid_ident === ".gridTwo") {
+                avgNumTouches = (placeHolder += grid2Nums[i]) / 5;
+
+
+            } else {
+                avgNumTouches = (placeHolder += grid3Nums[i]) / 5;
+
+            }
+        }
+
+        return Math.ceil(avgNumTouches);
+    }
+
+    /* Name: gamePlay
+       Purpose: The function will control the overall flow of the game. Animation occurs via a setTimeout function call.
+       The function makes a recursive call to itself if the tile is not in the winning cell.
+       Inputs: the grid identifier (.grid, .gridTwo, or .gridThree), the row, and column.
+       In this case the grid identifier corresponds to which board to use.
+       Returns: None
+     *  */
+    function gamePlay(grid_ident, row1, col1) {
+        "use strict";
+        var direction, numSteps, row = row1, col = col1, prevCol, prevRow;
+        direction = randomDirection(); //pick the direction
+        numSteps = randomNumSteps(); //pick the number of steps
+
+        //using setTimeout to show the appearance of animation
+        setTimeout(function () {
+
+            //if the direction is 0, then left
+            //if the direction is 1, then up
+            //if the direction is 2, then right
+            //if the direction is 3, then down
+            if (direction === 0) {
+                clearPoint(grid_ident, row, col); //clear the current point
+                prevCol = col; //assign this just in case the cell we're moving to doesn't exist
+                col = col - numSteps; //make the direction adjustment and the number of steps we're moving
+
+                //make a check to see if the cell exists before coloring.
+                //if it does exist, then color it and mark the stats
+                //otherwise, re-color the current point and mark the stats
+                if (doesCellExist(grid_ident, row, col) === true) {
+                    colorPoint(grid_ident, row, col);
+                    addToCounter(grid_ident);
+                } else {
+                    col = prevCol;
+                    colorPoint(grid_ident, row, col);
+                    addToCounter(grid_ident);
+                }
+            } else if (direction === 1) {
+                clearPoint(grid_ident, row, col);
+                prevRow = row;
+                row = row + numSteps;
+                if (doesCellExist(grid_ident, row, col) === true) {
+                    colorPoint(grid_ident, row, col);
+                    addToCounter(grid_ident);
+                } else {
+                    row = prevRow;
+                    colorPoint(grid_ident, row, col);
+                    addToCounter(grid_ident);
+                }
+            } else if (direction === 2) {
+                clearPoint(grid_ident, row, col);
+                prevCol = col;
+                col = col + numSteps;
+                if (doesCellExist(grid_ident, row, col) === true) {
+                    colorPoint(row, col);
+                    addToCounter(grid_ident);
+                } else {
+                    col = prevCol;
+                    colorPoint(grid_ident, row, col);
+                    addToCounter(grid_ident);
+                }
+            } else {
+                clearPoint(grid_ident, row, col);
+                prevRow = row;
+                row = row - numSteps;
+                if (doesCellExist(grid_ident, row, col) === true) {
+                    colorPoint(grid_ident, row, col);
+                    addToCounter(grid_ident);
+                } else {
+                    row = prevRow;
+                    colorPoint(grid_ident, row, col);
+                    addToCounter(grid_ident);
+                }
+            }
+
+            //if the countdown is zero, then notify the user we've exhausted all turns and output the counter
+            //if the cell is the winning cell, then notify the user that he's awesome and output the counter
+            //otherwise, make a recursive call to the function and output the counter
+            if (isWinningCell(grid_ident, row, col) === true) {
+                //alert('You Win!!!! Thanks for playing Strange Game!');
+                //document.getElementById('boldStuff').innerHTML = counter;
+                addToCountArray(grid_ident, returnCounter(grid_ident));
+                initializeCounter(grid_ident);
+
+            } else {
+                //document.getElementById('boldStuff').innerHTML = counter;
+                gamePlay(grid_ident, row, col);
+
+                /* Note: I typically don't use recursion, as it's bad for performance. However, this was really the only
+                   way to really get the setTimeout function to operate as intended. */
+            }
+        }, 1); //set the setTimeout timer to 500 milliseconds
+    }
+
+    /* Name: drawChart
+       Purpose: The function will draw the chart, graph the points, and draw the trendline
+       Inputs: None
+       Returns: None
+     *  */
+    function drawChart() {
+        "use strict";
+        var high = averageNumTouches(".grid") + 1000; //create the high for the Y axis
+
+        //create the data and give it an x, y format
+        var data = google.visualization.arrayToDataTable([
+           ['Number of Cells', 'Average Number of Iterations to Win'],
+            [100, averageNumTouches(".grid")],
+            [400, averageNumTouches(".gridTwo")],
+            [900, averageNumTouches(".gridThree")]
+        ]);
+
+        //add some options to the chart like a legend, equation of the line, min and max values, etc.
+        var options = {
+            title: 'Average Number of Iterations vs. Number of Cells',
+            hAxis: {title: 'Average Number of Iterations', minValue: 0, maxValue: high},
+            vAxis: {title: 'Number of Cells', minValue: 0, maxValue: 900},
+            legend: true,
+
+            //3rd order polynomial trendline for the points
+            trendlines: {
+                0: {
+                    type: 'polynomial',
+                    degree: 3,
+                    color: 'green',
+                    lineWidth: 3,
+                    opacity: 0.3,
+                    showR2: true,
+                    visibleInLegend: true
+                }
+            }
+        };
+
+        //grab the 'chart_div' element and append the graph to it
+        var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+
+        //actually do the drawing part
+        chart.draw(data, options);
+    }
+
+    /* Purpose: Lambda function to handle the event of when of when the page loads the HTML file */
+    $(document).ready(function () {
+        "use strict";
+
+        draw10x10Grid(); //draw the grid
+        colorPoint(".grid", 9, 0); //starting point for the game
+        draw20x20Grid();
+        colorPoint(".gridTwo", 19, 0);
+        draw30x30Grid();
+        colorPoint(".gridThree", 29, 0);
+    });
+
+    /* Purpose: Lambda function to when the 'Start' button is clicked */
+    $('#largeButton').click(function () {
+        "use strict";
+
+        //loop to generate 5 randomized trials per board
+        for (var i = 0; i < 5; i += 1) {
+            initializeCounter(".grid"); //initialize the counter for that respective gamePlay call
+            gamePlay(".grid", 9, 0); //call the gamePlay function to start the trial
+            initializeCounter(".gridTwo");
+            gamePlay(".gridTwo", 19, 0);
+            initializeCounter(".gridThree");
+            gamePlay(".gridThree", 29, 0);
+        }
+
+    });
+
+    /* Purpose: Lambda function to handle the event of when of when the 'Get Stats' button is pressed */
+    $('#statsButton').click(function () {
+
+        //loop through the array and print out the respective statistics
+        for (var i = 0; i < 5; i += 1) {
+            console.log("grid1Nums[" + i + "] is : " + grid1Nums[i]);
+            console.log("grid2Nums[" + i + "] is : " + grid2Nums[i]);
+            console.log("grid3Nums[" + i + "] is : " + grid3Nums[i]);
+        }
+
+        //output the average number of touches to the screen
+        console.log("the average number of touches are: " + averageNumTouches(".grid"));
+        console.log("the average number of touches are: " + averageNumTouches(".gridTwo"));
+        console.log("the average number of touches are: " + averageNumTouches(".gridThree"));
+    });
+
+    /* Purpose: Lambda function to handle the event of when of when the 'Draw Charts' button is pressed */
+    $('#drawChart').click(function () {
+        drawChart();
+    });
+</script>
+<br><br>
+</body>
+</html>
