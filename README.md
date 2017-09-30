@@ -1,5 +1,4 @@
-# CS4500_Project2
-Task was to build a strange game in JS with 5 day timelines (sprints).
+# CS4500_Project4
+Task was to build a strange game which evolved into a strange experiment in JS with 5 day timelines.
 
-The game is more of a random walk simulation. However, it is a good demonstration on how to build dynamic elements in Javascript.
-In addition, there are a lot of great code examples in here on how to construct a grid, etc. in Javascript.
+There are 3 boards each with 100, 400, and 900 cells respectively. On each board, 5 red tiles will be used to simulate 5 random trials. Each tile will start in the lower left corner and then move independently and unaware of each other until each one reaches the upper right hand corner. The strange experiment will then graph the data along with an appropriate trendline.
